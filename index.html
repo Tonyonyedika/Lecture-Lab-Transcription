@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lecture & Lab Transcription</title>
+<style>
+  /* ---- General Styles ---- */
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f3f4f6;
+    color: #1f2937;
+  }
+
+  header {
+    background: linear-gradient(90deg, #4f46e5, #f59e0b);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+
+  main {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 0 20px;
+  }
+
+  .card {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+  }
+
+  .upload-area {
+    border: 2px dashed #4f46e5;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.3s;
+  }
+
+  .upload-area:hover {
+    border-color: #f59e0b;
+  }
+
+  .upload-area input {
+    display: none;
+  }
+
+  button {
+    background-color: #4f46e5;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  button:hover {
+    background-color: #f59e0b;
+  }
+
+  .flex-container {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .flex-container .card {
+    flex: 1 1 300px;
+  }
+
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: #f9fafb;
+    padding: 12px;
+    border-radius: 8px;
+  }
+</style>
+</head>
+<body>
+
+<header>Lecture & Lab Transcription</header>
+
+<main>
+  <!-- Upload Card -->
+  <div class="card">
+    <div class="upload-area" id="uploadArea">
+      <p>Drag & Drop Audio Here or Click to Browse</p>
+      <input type="file" id="audioFile" accept="audio/*" />
+    </div>
+    <br>
+    <button id="transcribeBtn">Transcribe</button>
+  </div>
+
+  <!-- Results -->
+  <div class="flex-container">
+    <div class="card">
+      <h3>Transcript</h3>
+      <pre id="transcript"></pre>
+    </div>
+    <div class="card">
+      <h3>Key Points</h3>
+      <pre id="keyPoints"></pre>
+      <h3>Questions</h3>
+      <pre id="questions"></pre>
+      <h3>Explanations</h3>
+      <pre id="explanations"></pre>
+    </div>
+  </div>
+
+  <div class="card" style="text-align:center;">
+    <button id="downloadPdfBtn">Download PDF</button>
+  </div>
+</main>
+
+<script>
+  const uploadArea = document.getElementById('uploadArea');
+  const fileInput = document.getElementById('audioFile');
+  const transcribeBtn = document.getElementById('transcribeBtn');
+  const transcriptEl = document.getElementById('transcript');
+  const keyPointsEl = document.getElementById('keyPoints');
+  const questionsEl = document.getElementById('questions');
+  const explanationsEl = document.getElementById('explanations');
+  const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+
+  // Drag & Drop
+  uploadArea.addEventListener('click', () => fileInput.click());
+  uploadArea.addEventListener('dragover', e => e.preventDefault());
+  uploadArea.addEventListener('drop', e => {
+    e.preventDefault();
+    fileInput.files = e.dataTransfer.files;
+  });
+
+  transcribeBtn.addEventListener('click', async () => {
+    const file = fileInput.files[0];
+    if (!file) {
+      alert("Please select an audio file first.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    transcriptEl.textContent = "Transcribing...";
+    keyPointsEl.textContent = "";
+    questionsEl.textContent = "";
+    explanationsEl.textContent = "";
+
+    try {
+      const response = await fetch("/transcribe", {
+        method: "POST",
+        body: formData
+      });
+      const data = await response.json();
+      if (data.error) {
+        transcriptEl.textContent = data.error;
+        return;
+      }
+
+      transcriptEl.textContent = data.transcript || "";
+      keyPointsEl.textContent = (data.key_points || []).join("\n") || "No key points detected";
+      questionsEl.textContent = (data.questions || []).join("\n") || "No questions detected";
+      explanationsEl.textContent = (data.explanations || []).join("\n") || "No explanations detected";
+
+    } catch (err) {
+      transcriptEl.textContent = "Error: " + err;
+    }
+  });
+
+  downloadPdfBtn.addEventListener('click', () => {
+    window.open("/download_pdf", "_blank");
+  });
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
